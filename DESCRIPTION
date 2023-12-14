@@ -37,4 +37,4 @@ Imports:
     tibble,
     magrittr
 VignetteBuilder: knitr
-URL: https://m-qin.github.io/CombineDistributions/
+URL: https://m-qin.github.io/CombineDistributions/, https://jhu-statprogramming-fall-2023.github.io/biostat777-project3-part1-m-qin/
