@@ -1,0 +1,13 @@
+pandoc: 3.1.1
+pkgdown: 2.0.7
+pkgdown_sha: ~
+articles:
+  MMODS-vignette: MMODS-vignette.html
+  SIRS-vignette: SIRS-vignette.html
+  tidy-tuesday-example-analysis: tidy-tuesday-example-analysis.html
+  intro-vignette: intro-vignette.html
+last_built: 2023-12-14T20:52Z
+urls:
+  reference: https://jhu-statprogramming-fall-2023.github.io/biostat777-project3-part1-m-qin/reference
+  article: https://jhu-statprogramming-fall-2023.github.io/biostat777-project3-part1-m-qin/articles
+
