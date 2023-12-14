@@ -21,7 +21,7 @@ knitr::opts_chunk$set(
   fig.width = 7
 )
 
-knitr::opts_knit$set(root.dir = rprojroot::find_rstudio_root_file())
+# knitr::opts_knit$set(root.dir = rprojroot::find_rstudio_root_file())
 ```
 
 This vignette demonstrates the `LOP()` and `vincent()` functions on the **Weather Forecast Accuracy** dataset, which is a part of the [TidyTuesday](https://github.com/rfordatascience/tidytuesday) project.
@@ -45,14 +45,14 @@ library(cowplot)
 
 ```{r get-data}
 # test if a directory named "data" exists locally, if not create it
-if (!dir.exists("data")){
-  dir.create("data")
+if (!dir.exists("../data")){
+  dir.create("../data")
 }
 
 # read the data; download locally if not already downloaded
-if (!file.exists("data/tuesdata.rda")){
+if (!file.exists("../data/tuesdata.rda")){
   tuesdata <- tidytuesdayR::tt_load('2022-12-20') # can also use tidytuesdayR::tt_load(2022, week = 51)
-  usethis::use_data(tuesdata)
+  usethis::use_data(tuesdata, overwrite = TRUE)
   
   # Alternatively, read in the data manually
   # weather_forecasts <- readr::read_csv('https://raw.githubusercontent.com/rfordatascience/tidytuesday/master/data/2022/2022-12-20/weather_forecasts.csv')
@@ -81,6 +81,7 @@ highs_by_hour <- highs %>%
 highs_by_date <- highs %>%
   group_by(date) %>%
   group_split()
+names(highs_by_date) <- unique(highs$date)
 ```
 
 ### Exploratory Plot
@@ -95,7 +96,8 @@ ggplot(highs) +
   theme_bw() +
   xlab("Date (in December 2021)") +
   ylab("Temperature (F)") +
-  scale_linetype_discrete(name = "", labels = c("Forecast", "Observed"))
+  scale_linetype_discrete(name = "", labels = c("Forecast", "Observed")) +
+  ggtitle("Forecasted vs. Observed Daily High Temperature in Baltimore, MD\nDecember 1-31, 2021")
 ```
 
 ### Simulate Distributions for the Weather Forecasts
@@ -108,7 +110,7 @@ quantiles_to_be_specified <- seq(0.01, 0.99, 0.01)
 high_forecasts_by_hour <- map(.x = highs_by_hour, .f = ~filter(.x, type == "forecast_temp"))
 high_forecasts_by_date <- map(.x = highs_by_date, .f = ~filter(.x, type == "forecast_temp"))
 high_forecasts_by_date[[15]] <- NULL # only 12, 24, and 36 hour ahead forecasts on Dec 15
-high_forecasts_by_date[[14]] <- NULL # only 12, 36, and 48 hour ahead forecasts on Dec 15
+high_forecasts_by_date[[14]] <- NULL # only 12, 36, and 48 hour ahead forecasts on Dec 14
 
 sd_vec <- map_dbl(.x = high_forecasts_by_hour, .f = ~sd(.x$temp))
 
@@ -119,6 +121,10 @@ high_distributions_by_date <- lapply(X = high_forecasts_by_date,
   lapply(function(ls) data.frame(value = unlist(ls),
                                  quantile = rep(quantiles_to_be_specified, 4),
                                  id = rep(c("12", "24", "36", "48"), each = length(quantiles_to_be_specified))))
+
+high_distributions_unlisted <- 1:length(high_distributions_by_date) %>%
+  lapply(function(i) mutate(high_distributions_by_date[[i]], date = names(high_distributions_by_date)[i])) %>%
+  bind_rows
 ```
 
 
@@ -128,7 +134,7 @@ I can now aggregate the 12-hour, 24-hour, 36-hour, and 48-hour-ahead forecasts f
 
 For illustration purposes, I will show only the result for December 31, 2021.
 
-```{r LOP-vincent-quantiles}
+```{r LOP-vincent-quantiles-dec31}
 dec31_high_distributions <- high_distributions_by_date[[29]] %>%
   arrange(quantile)
 
@@ -153,8 +159,45 @@ dec31_pred <- highs %>%
   arrange(forecast_hours_before)
 ```
 
+```{r LOP-vincent-quantiles, eval=F, echo=F}
+high_distributions_unlisted <- high_distributions_unlisted %>%
+  map(.f = ~arrange(.x, quantile))
+
+# to do: fix lop and vincent. .l is wrong. don't use $, use filter and get vector of quantiles etc for one date and one model
+
+lop <- pmap(.l = list(high_distributions_unlisted$quantile,
+                      high_distributions_unlisted$value,
+                      high_distributions_unlisted$id),
+            .f = function(quantile, value, id) LOP(quantile = quantile,
+                                                   value = value,
+                                                   id = id,
+                                                   ret_quantiles = quantiles_to_be_specified,
+                                                   ret_values = NA))
+
+vincent <- pmap(.l = list(high_distributions_unlisted$quantile,
+                      high_distributions_unlisted$value,
+                      high_distributions_unlisted$id),
+            .f = function(quantile, value, id) vincent(quantile = quantile,
+                                                   value = value,
+                                                   id = id,
+                                                   ret_quantiles = quantiles_to_be_specified,
+                                                   ret_values = NA))
+
+# to do: unlist these model-dates and combine into one data frame
+
+# get observed high temp and point estimates for each date and each model
+high_obs <- highs %>%
+  filter(type == "observed_temp") %>%
+  arrange(forecast_hours_before)
+high_forecasts <- highs %>%
+  filter(type == "forecast_temp") %>%
+  arrange(forecast_hours_before)
+```
+
 
 ```{r plot-cdfs, fig.width=7, eval=F, echo=F}
+# I am still writing this chunk; eval=F, echo=F for now
+
 # define sample lines for plotting
 lines_LOP_x = c(35,45,55,65,75)
 lines_LOP = data.frame(value = rep(lines_LOP_x, 4), 
@@ -228,7 +271,8 @@ both_pdf <- ggplot(data = preds_pdf,
   geom_vline(data = dec31_obs, aes(xintercept = temp), linetype = "dashed") +
   labs(x = "Temperature (F)", 
        y = "Probability Density Function (PDF)",
-       caption = "Predicted High Temperature for December 31, 2021\nObserved High Temperature as Dashed Line")+
+       caption = "Predicted High Temperature for December 31, 2021\nObserved High Temperature as Dashed Line",
+       title = "Aggregated High Temperature Forecasts for December 31, 2021\n(Observed High Temperature as Dashed Line)")+
   scale_color_manual(values = c("#377EB8", "#ff7f00"))+
   theme_classic()+
   theme(legend.position = c(0.2,0.9), 
@@ -264,6 +308,7 @@ In the above illustration, we can see that the linear opinion pool had more unce
 - `map()`
 - `map_dbl()`
 - `map2()`
+- `pmap()`
 
 `ggplot2`
 

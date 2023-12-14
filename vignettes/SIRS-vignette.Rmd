@@ -19,9 +19,7 @@ knitr::opts_chunk$set(
   comment = "#>"
 )
 
-knitr::opts_knit$set(root.dir = rprojroot::find_rstudio_root_file())
-
-fig_path <- "figures/"
+# knitr::opts_knit$set(root.dir = rprojroot::find_rstudio_root_file())
 ```
 
 This vignette implements the first case study from [@EAH-ms]. We simulate a multi-model effort to evaluate the performance of various aggregation methods when applied to distributions of public health outcomes. 
@@ -45,6 +43,12 @@ library(knitr)
 
 # set seed so we can replicate results
 set.seed(20)
+
+# test if a directory named "figures" exists locally, if not create it
+if (!dir.exists("../figures")){
+  dir.create("../figures")
+}
+fig_path <- "../figures/"
 ```
 
 ## SIRS Model

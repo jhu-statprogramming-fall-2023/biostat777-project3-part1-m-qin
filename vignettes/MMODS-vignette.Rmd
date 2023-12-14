@@ -20,11 +20,7 @@ knitr::opts_chunk$set(
   comment = "#>"
 )
 
-knitr::opts_knit$set(root.dir = rprojroot::find_rstudio_root_file())
-
-fig_path <- "figures/"
-data_path <- "data/"
-data_raw_path <- "data-raw/"
+# knitr::opts_knit$set(root.dir = rprojroot::find_rstudio_root_file())
 ```
 
 ```{r setup-plot, echo = FALSE}
@@ -69,10 +65,17 @@ library(cowplot)
 First, we load the data (both individual model projections and post-hoc observations). These data are provided in the package.
 
 ```{r load-proj}
-# create data/ folder if doesn't exist
-if (!dir.exists("data")){
-  dir.create("data")
+# test if directories exists locally, if not create them
+if (!dir.exists("../figures")){
+  dir.create("../figures")
 }
+if (!dir.exists("../data")){
+  dir.create("../data")
+}
+
+fig_path <- "../figures/"
+data_path <- "../data/"
+data_raw_path <- "../data-raw/" # contains scripts that write into data/ directory
 
 # individual projections
 if (!file.exists(paste0(data_path, "MMODS.rda"))){

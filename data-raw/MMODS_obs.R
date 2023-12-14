@@ -10,8 +10,8 @@ countryattr_local_path <- "inst/extdata/county_attributes.xlsx"
 countydeaths_path <-'https://raw.githubusercontent.com/MMODS-org/Elicitation-1/main/data/processed/county/time_series_covid19_deaths_US.csv'
 
 # get data
-if (!dir.exists("inst/extdata")){
-  dir.create("inst/extdata", recursive = T)
+if (!dir.exists("../inst/extdata")){
+  dir.create("../inst/extdata", recursive = T)
 }
 download.file(url = countryattr_path, destfile = countryattr_local_path)
 df_county_attr <- read_xlsx(countryattr_local_path)
