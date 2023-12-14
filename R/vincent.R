@@ -53,7 +53,7 @@ evaluate_qf <- function(quantile, value, id, ret_quants){
     val_sub <- value[which(id == i)]
     if(length(unique(val_sub)) == 1){
       interp_functions = interp_functions %>%
-        dplyr::bind_rows(data.frame(quantile = quant_vals,
+        dplyr::bind_rows(data.frame(quantile = quant_sub,
                                     value = val_sub,
                                     id = i))
     }
