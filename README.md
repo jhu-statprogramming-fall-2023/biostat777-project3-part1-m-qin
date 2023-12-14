@@ -13,7 +13,7 @@ Using `pkgdown`, I created a website to help users use the `CombineDistributions
 4. I updated the sidebar of the homepage to reflect the license that Dr. Howerton's original package uses [CC-BY-NC](http://creativecommons.org/licenses/by-nc/3.0/).
 5. In the DESCRIPTION file, I wrote a title for the website: "Combine probabilistic predictions by averaging probabilities or quantiles".
 6. I updated the README of the package, which is printed on the homepage of the website as well, to include the [paper](http://doi.org/10.1098/rsif.2022.0659) that Dr. Howerton et al. published after the package was published on [Zenodo](https://doi.org/10.5281/zenodo.7437280).
-7. I had some errors when running `devtools::check()`, so I edited some of the package's scripts and files. I may not have caught everything though.
+7. I had some errors when running `devtools::check()`, so I edited some of the package's scripts and files. I may not have caught everything though. I had some trouble especially with setting the root directory of this project.
 
 ### Exported functions in this package
 

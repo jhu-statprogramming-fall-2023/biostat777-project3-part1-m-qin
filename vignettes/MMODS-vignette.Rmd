@@ -69,6 +69,11 @@ library(cowplot)
 First, we load the data (both individual model projections and post-hoc observations). These data are provided in the package.
 
 ```{r load-proj}
+# create data/ folder if doesn't exist
+if (!dir.exists("data")){
+  dir.create("data")
+}
+
 # individual projections
 if (!file.exists(paste0(data_path, "MMODS.rda"))){
   source(paste0(data_raw_path, "MMODS.R"))
