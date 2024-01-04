@@ -1,7 +1,7 @@
 
 ## Michelle Qin's additions for Biostat 777 class
 
-For my Biostat 777 class (taken fall 2023), I was thrilled to create a [website](https://github.com/jhu-statprogramming-fall-2023/biostat777-project3-part1-m-qin) for the R package `CombineDistributions`. I first used `CombineDistributions` two and a half years ago when I worked with Dr. Emily Howerton (the creator of this package), Dr. Cecile Viboud, and other scientists at the [COVID-19 Scenario Modeling Hub](https://covid19scenariomodelinghub.org). Our task was to project U.S. COVID-19 cases, hospitalizations, and deaths from one week to six months ahead. Such long-term infectious disease modeling required us to carefully combine multiple expert modeling teams' projections and quantify their combined uncertainty, motivating Dr. Howerton et al.'s methodological work in this area.
+For my Biostat 777 class (taken fall 2023), I was thrilled to create a [website](https://jhu-statprogramming-fall-2023.github.io/biostat777-project3-part1-m-qin/) for the R package `CombineDistributions`. I first used `CombineDistributions` two and a half years ago when I worked with Dr. Emily Howerton (the creator of this package), Dr. Cecile Viboud, and other scientists at the [COVID-19 Scenario Modeling Hub](https://covid19scenariomodelinghub.org). Our task was to project U.S. COVID-19 cases, hospitalizations, and deaths from one week to six months ahead. Such long-term infectious disease modeling required us to carefully combine multiple expert modeling teams' projections and quantify their combined uncertainty, motivating Dr. Howerton et al.'s methodological work in this area.
 
 ### The `pkgdown` website
 
